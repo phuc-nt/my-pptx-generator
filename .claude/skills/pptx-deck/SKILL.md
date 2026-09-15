@@ -11,11 +11,11 @@ You read the source, decide what the audience needs, write the deck as canonical
 
 1. **Read all source material first.** Note the audience, the decision they must make, and the 5–12 claims that support it. If the source has tables, they are usually the best slide content.
 2. **Outline before layout.** One line per slide: `n. <headline as a claim> — <layout>`. Headlines state conclusions ("The three tools barely overlap"), never topics ("Tools"). Aim for 8–14 slides for a 400-line source.
-3. **Write the JSON yourself**, from your own outline, to `<source-dir>/deck.json` (see **Where files go**). `mpg init` writes a starter. Never hand back a deck from `examples/` (see **`examples/` is not an answer**). Use a build script (Python/Node) when the deck has repeated structures; compute text box heights with the formula in [references/layout.md](references/layout.md) instead of guessing.
-4. **`mpg validate <source-dir>/deck.json --fit`** — fix every error and read every warning. `text-collision` and `text-tight-card` are real defects even though each box "fits".
-5. **`mpg render <source-dir>/deck.json --out <source-dir>/out`** then **Read `<source-dir>/out/sheet.png`** and every page PNG that has dense content. Look for: lines wrapping where you did not intend, text touching card edges, orphan words, uneven card heights. The checker cannot see everything; you can.
+3. **Write the JSON yourself**, from your own outline, to `<source-dir>/deck.json` (see **Where files go**). `npx mpg init` writes a starter. Never hand back a deck from `examples/` (see **`examples/` is not an answer**). Use a build script (Python/Node) when the deck has repeated structures; compute text box heights with the formula in [references/layout.md](references/layout.md) instead of guessing.
+4. **`npx mpg validate <source-dir>/deck.json --fit`** — fix every error and read every warning. `text-collision` and `text-tight-card` are real defects even though each box "fits".
+5. **`npx mpg render <source-dir>/deck.json --out <source-dir>/out`** then **Read `<source-dir>/out/sheet.png`** and every page PNG that has dense content. Look for: lines wrapping where you did not intend, text touching card edges, orphan words, uneven card heights. The checker cannot see everything; you can.
 6. Fix → validate → render again until the sheet is clean. Shorten copy before shrinking fonts.
-7. **`mpg export`** (or `mpg build` for 4–7 in one command). Report the **absolute** path of the PPTX, the slide count, and any warnings you deliberately accepted.
+7. **`npx mpg export`** (or `npx mpg build` for 4–7 in one command). Report the **absolute** path of the PPTX, the slide count, and any warnings you deliberately accepted.
 
 ## Where files go
 
@@ -68,11 +68,15 @@ cover · claim + two cards · numbered list (5 rows) · three columns · table (
 
 `D` = `<source-dir>` from **Where files go**.
 
+**The CLI is not installed globally.** Run it with `npx mpg` from anywhere in
+the repo, or `node bin/mpg.js` from the repo root. A bare `mpg` exits 127; three
+separate sessions have lost a round trip rediscovering this.
+
 ```
-mpg themes                              # carbon | ink | paper | slate
-mpg init D/deck.json --theme carbon
-mpg validate D/deck.json --fit          # exit 1 on errors; --strict also on warnings
-mpg render D/deck.json --out D/out [--page 6] [--svg]
-mpg export D/deck.json --out D/out/deck.pptx
-mpg build D/deck.json --out D/out       # validate + render + export
+npx mpg themes                              # carbon | ink | paper | slate
+npx mpg init D/deck.json --theme carbon
+npx mpg validate D/deck.json --fit          # exit 1 on errors; --strict also on warnings
+npx mpg render D/deck.json --out D/out [--page 6] [--svg]
+npx mpg export D/deck.json --out D/out/deck.pptx
+npx mpg build D/deck.json --out D/out       # validate + render + export
 ```

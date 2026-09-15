@@ -15,14 +15,16 @@ npx mpg build examples/minimal.json --out out/demo   # validate + previews + ppt
 
 ## Commands
 
+Run the CLI with `npx mpg` (or `node bin/mpg.js`); it is not installed globally.
+
 | Command | Does |
 |---|---|
-| `mpg init deck.json` | starter JSON |
-| `mpg themes` | built-in themes (`carbon`, `ink`, `paper`, `slate`) |
-| `mpg validate deck.json [--fit] [--json] [--strict]` | schema + design checks; exit 1 on errors |
-| `mpg render deck.json --out dir [--page n] [--svg]` | `page-NN.png` + `sheet.png` contact sheet |
-| `mpg export deck.json --out deck.pptx` | editable PPTX (refuses on errors unless `--force`) |
-| `mpg build deck.json --out dir` | all of the above |
+| `npx mpg init deck.json` | starter JSON |
+| `npx mpg themes` | built-in themes (`carbon`, `ink`, `paper`, `slate`) |
+| `npx mpg validate deck.json [--fit] [--json] [--strict]` | schema + design checks; exit 1 on errors |
+| `npx mpg render deck.json --out dir [--page n] [--svg]` | `page-NN.png` + `sheet.png` contact sheet |
+| `npx mpg export deck.json --out deck.pptx` | editable PPTX (refuses on errors unless `--force`) |
+| `npx mpg build deck.json --out dir` | all of the above |
 
 ## Deck JSON
 
@@ -50,7 +52,7 @@ Node types: `text`, `shape` (`style.shape`: `rect` | `ellipse` | `line`; `fill`,
 
 | Code | Severity | Meaning |
 |---|---|---|
-| `text-overflow` | error | needed height > box height (wrap model: `floor(width / (size×0.52))` chars/line) |
+| `text-overflow` | error | needed height > box height (wrap model: sum of glyph advances, 1.0em for CJK and 0.52em otherwise) |
 | `outside-page`, `zero-size`, `empty-page`, `missing-image`, `remote-image` | error | |
 | `text-collision` | warning | measured boxes of two text nodes intersect |
 | `text-spills-card` / `text-tight-card` | warning | text crosses / comes within 10px of the bottom of the card it sits on |
