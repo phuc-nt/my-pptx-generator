@@ -7,7 +7,7 @@
   "files": ["bin", "src", "examples", "README.md", "AGENTS.md"],
   "scripts": {
     "test": "node --test 'test/*.test.js'",
-    "example": "node bin/mpg.js build examples/orgf.json --out out/orgf"
+    "example": "node bin/mpg.js build examples/minimal.json --out out/demo"
   },
   "engines": { "node": ">=20" },
   "dependencies": {

@@ -10,7 +10,7 @@ You read the source, decide what the audience needs, write the deck as canonical
 ## Workflow (do not skip steps)
 
 1. **Read all source material first.** Note the audience, the decision they must make, and the 5–12 claims that support it. If the source has tables, they are usually the best slide content.
-2. **Outline before layout.** One line per slide: `n. <headline as a claim> — <layout>`. Headlines state conclusions ("Ba vùng gần như không chồng nhau"), never topics ("Tools"). Aim for 8–14 slides for a 400-line source.
+2. **Outline before layout.** One line per slide: `n. <headline as a claim> — <layout>`. Headlines state conclusions ("The three tools barely overlap"), never topics ("Tools"). Aim for 8–14 slides for a 400-line source.
 3. **Write the JSON yourself**, from your own outline, to `<source-dir>/deck.json` (see **Where files go**). `mpg init` writes a starter. Never hand back a deck from `examples/` (see **`examples/` is not an answer**). Use a build script (Python/Node) when the deck has repeated structures; compute text box heights with the formula in [references/layout.md](references/layout.md) instead of guessing.
 4. **`mpg validate <source-dir>/deck.json --fit`** — fix every error and read every warning. `text-collision` and `text-tight-card` are real defects even though each box "fits".
 5. **`mpg render <source-dir>/deck.json --out <source-dir>/out`** then **Read `<source-dir>/out/sheet.png`** and every page PNG that has dense content. Look for: lines wrapping where you did not intend, text touching card edges, orphan words, uneven card heights. The checker cannot see everything; you can.
@@ -29,22 +29,21 @@ The deck belongs with the material it was written from, not in this repo's worki
 
 ## `examples/` is not an answer
 
-`examples/minimal.json` and `examples/orgf.json` exist to exercise the test
-suite and to show what finished coordinates look like. They are **reference
-material, never output**.
+Everything in `examples/` exists to exercise the test suite and to show what
+finished coordinates look like. It is **reference material, never output**.
 
-`examples/orgf.json` happens to be built from the same the same
-documents that live in a folder. An agent asked to make a deck
-from that folder once noticed the match, checked that the 12 slide names
-looked right, built the existing example and reported it as the answer. The
-PPTX was fine; the request was not fulfilled. Steps 1–3 — reading, editing,
-deciding what the audience needs — never ran.
+This rule is here because of a real failure. An example deck once happened to
+be built from the same source documents a user later pointed the skill at. The
+agent noticed the match, checked that the slide names looked right, built the
+existing example and reported it as the answer. The PPTX was fine; the request
+was not fulfilled. Steps 1–3 — reading, editing, deciding what the audience
+needs — never ran.
 
 So:
 
-- **Always write a new deck JSON**, even when an example covers the same source.
-- **A matching example is a warning sign, not a shortcut.** If you recognise the
-  source, you are about to skip the work you were asked to do.
+- **Always write a new deck JSON**, even when an example looks close to the source.
+- **A familiar-looking example is a warning sign, not a shortcut.** If you
+  recognise the material, you are about to skip the work you were asked to do.
 - **Copy coordinates, not content.** Lifting a layout block out of an example is
   the point of having examples. Lifting its headlines and body copy is not.
 - If you genuinely believe an existing deck should be reused, say so and ask
@@ -57,7 +56,7 @@ So:
 - **Stacked text needs measured spacing.** Two rows 30px apart collide as soon as the upper one wraps. Slot rows by `textHeight()` + gap, never by eye.
 - **Cards are shapes; text sits over them.** Leave ≥10px between the last text bottom and the card bottom, ≥24px padding on the sides.
 - **Never rasterise.** Do not screenshot pages into image nodes; the whole point of the pipeline is that the recipient can edit text and shapes.
-- **Vietnamese and other diacritics** are fine everywhere (PNG, PPTX); the wrap model treats them as single characters.
+- **Write the deck in the language of the source**, unless the user asks for another one. This repo is documented in English; that says nothing about the deck. Diacritics and CJK are fine everywhere (PNG, PPTX) and the wrap model counts them as single characters, so a Vietnamese or Japanese deck needs no special handling.
 - **Speaker notes** (`page.notes`) are where the nuance goes; the slide keeps the claim.
 
 ## Layouts that work at 1280×720 (see references/layout.md for coordinates)

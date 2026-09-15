@@ -10,7 +10,7 @@ which every text box and shape stays editable. Pure Node; no browser.
 
 ```
 npm install
-npx mpg build examples/orgf.json --out out/orgf    # validate + previews + pptx
+npx mpg build examples/minimal.json --out out/demo   # validate + previews + pptx
 ```
 
 ## Commands
