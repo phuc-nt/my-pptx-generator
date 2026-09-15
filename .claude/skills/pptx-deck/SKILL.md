@@ -11,11 +11,21 @@ You read the source, decide what the audience needs, write the deck as canonical
 
 1. **Read all source material first.** Note the audience, the decision they must make, and the 5–12 claims that support it. If the source has tables, they are usually the best slide content.
 2. **Outline before layout.** One line per slide: `n. <headline as a claim> — <layout>`. Headlines state conclusions ("Ba vùng gần như không chồng nhau"), never topics ("Tools"). Aim for 8–14 slides for a 400-line source.
-3. **Write the JSON** (`mpg init deck.json` for a starter). Use a build script (Python/Node) when the deck has repeated structures; compute text box heights with the formula in [references/layout.md](references/layout.md) instead of guessing.
-4. **`mpg validate deck.json --fit`** — fix every error and read every warning. `text-collision` and `text-tight-card` are real defects even though each box "fits".
-5. **`mpg render deck.json --out out/`** then **Read `out/sheet.png`** and every page PNG that has dense content. Look for: lines wrapping where you did not intend, text touching card edges, orphan words, uneven card heights. The checker cannot see everything; you can.
+3. **Write the JSON** to `<source-dir>/deck.json` (see **Where files go**). `mpg init` writes a starter. Use a build script (Python/Node) when the deck has repeated structures; compute text box heights with the formula in [references/layout.md](references/layout.md) instead of guessing.
+4. **`mpg validate <source-dir>/deck.json --fit`** — fix every error and read every warning. `text-collision` and `text-tight-card` are real defects even though each box "fits".
+5. **`mpg render <source-dir>/deck.json --out <source-dir>/out`** then **Read `<source-dir>/out/sheet.png`** and every page PNG that has dense content. Look for: lines wrapping where you did not intend, text touching card edges, orphan words, uneven card heights. The checker cannot see everything; you can.
 6. Fix → validate → render again until the sheet is clean. Shorten copy before shrinking fonts.
-7. **`mpg export deck.json --out deck.pptx`** (or `mpg build` for 4–7 in one command). Report the path, slide count, and any warnings you deliberately accepted.
+7. **`mpg export`** (or `mpg build` for 4–7 in one command). Report the **absolute** path of the PPTX, the slide count, and any warnings you deliberately accepted.
+
+## Where files go
+
+The deck belongs with the material it was written from, not in this repo's working directories.
+
+- **Deck JSON**: `<source-dir>/deck.json`, beside the documents you read. If the user names a file or directory, use that instead.
+- **Build output**: `<source-dir>/out/` — page PNGs, `sheet.png`, `deck.pptx`.
+- **`out/` at the repo root is scratch space** and is gitignored. Never leave a user's deliverable there.
+- **Report absolute paths.** A relative path in your final message forces the user to guess the working directory. Write `/Users/.../04-organization-f/out/deck.pptx`, not `out/deck.pptx`.
+- When the source is pasted text with no directory, ask where to write, or default to the current working directory and say so explicitly.
 
 ## Rules that come from real failures
 
@@ -33,11 +43,13 @@ cover · claim + two cards · numbered list (5 rows) · three columns · table (
 
 ## Commands
 
+`D` = `<source-dir>` from **Where files go**.
+
 ```
-mpg themes                      # carbon | ink | paper | slate
-mpg init deck.json --theme carbon
-mpg validate deck.json --fit    # exit 1 on errors; --strict also on warnings
-mpg render deck.json --out out/ [--page 6] [--svg]
-mpg export deck.json --out deck.pptx
-mpg build deck.json --out out/  # validate + render + export
+mpg themes                              # carbon | ink | paper | slate
+mpg init D/deck.json --theme carbon
+mpg validate D/deck.json --fit          # exit 1 on errors; --strict also on warnings
+mpg render D/deck.json --out D/out [--page 6] [--svg]
+mpg export D/deck.json --out D/out/deck.pptx
+mpg build D/deck.json --out D/out       # validate + render + export
 ```
