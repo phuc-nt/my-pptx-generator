@@ -3,3 +3,4 @@ out/
 *.pptx
 !examples/**/*.pptx
 .DS_Store
+test-input-document/

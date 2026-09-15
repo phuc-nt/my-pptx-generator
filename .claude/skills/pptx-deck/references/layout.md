@@ -17,30 +17,58 @@ Font scale (px): title 52 · section 46 · card heading 22–28 · body 16–17 
 
 ## Text height (the same formula the checker uses)
 
+Lines are measured by **summing glyph advances**, not by counting characters.
+Latin advances ~0.52 em; CJK glyphs are full-width at 1.0 em. Counting
+characters made the checker pass Japanese slides that overflowed on screen.
+
 ```
-capacity = floor(width / (fontSize × 0.52))      # characters per line
-lines    = greedy word wrap at `capacity` (explicit \n always breaks)
-height   = fontSize + (lines − 1) × fontSize × lineHeight   # lineHeight default 1.3
-box.height = ceil(height) + 6                     # keep ≥ 6px slack
+advance(ch) = 1.0 em if East Asian Wide/Fullwidth else 0.52 em
+lines       = greedy wrap while Σ advance ≤ width (explicit \n always breaks)
+              Latin breaks on spaces; CJK may break between any two characters
+height      = fontSize + (lines − 1) × fontSize × lineHeight   # lineHeight default 1.3
+box.height  = ceil(height) + 6                     # keep ≥ 6px slack
 ```
 
 Python helper to paste into a build script:
 
 ```python
-import math
+import unicodedata
+
+def adv(ch, s):
+    return s * (1.0 if unicodedata.east_asian_width(ch) in ('W', 'F') else 0.52)
+
 def wrapped(v, w, s):
-    cap = max(1, math.floor(w / (s * 0.52))); out = []
+    out = []
     for para in v.split('\n'):
-        if not para: out.append(''); continue
-        line = ''
-        for word in para.split():
-            if line and len(line) + len(word) + 1 > cap: out.append(line); line = ''
-            line = f'{line} {word}'.strip() if line else word
-        out.append(line)
+        if not para:
+            out.append(''); continue
+        line, lw = '', 0.0
+        for ch in para:
+            a = adv(ch, s)
+            wide = unicodedata.east_asian_width(ch) in ('W', 'F')
+            if lw + a > w and line:
+                if wide or ch == ' ':
+                    out.append(line.rstrip()); line, lw = '', 0.0
+                else:                      # break at the last space in a Latin run
+                    cut = line.rfind(' ')
+                    if cut > 0:
+                        out.append(line[:cut]); line = line[cut + 1:]
+                        lw = sum(adv(c, s) for c in line)
+                    else:
+                        out.append(line); line, lw = '', 0.0
+            if ch == ' ' and not line:
+                continue
+            line += ch; lw += a
+        out.append(line.rstrip())
     return out
+
 def text_h(v, w, s, lh=1.3):
     n = len(wrapped(v, w, s)); return s + (n - 1) * s * lh
 ```
+
+The helper omits the kinsoku (line-break) rules the JS model applies, so it can
+be off by one line where a paragraph ends in Japanese punctuation. Budget the
+6px slack above and always confirm against `mpg validate --fit`.
 
 Stacking rule: `next.y = prev.y + text_h(prev) + gap` — never a fixed offset.
 

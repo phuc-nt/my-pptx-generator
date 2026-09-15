@@ -56,7 +56,8 @@ So:
 - **Stacked text needs measured spacing.** Two rows 30px apart collide as soon as the upper one wraps. Slot rows by `textHeight()` + gap, never by eye.
 - **Cards are shapes; text sits over them.** Leave ≥10px between the last text bottom and the card bottom, ≥24px padding on the sides.
 - **Never rasterise.** Do not screenshot pages into image nodes; the whole point of the pipeline is that the recipient can edit text and shapes.
-- **Write the deck in the language of the source**, unless the user asks for another one. This repo is documented in English; that says nothing about the deck. Diacritics and CJK are fine everywhere (PNG, PPTX) and the wrap model counts them as single characters, so a Vietnamese or Japanese deck needs no special handling.
+- **Write the deck in the language of the source**, unless the user asks for another one. This repo is documented in English; that says nothing about the deck.
+- **CJK text is twice as wide per character.** Chinese, Japanese and Korean glyphs are full-width: roughly one em each, against ~0.52 em for Latin and Vietnamese. The wrap model measures this, so `validate` and the previews are honest about it — but *you* must budget for it when writing copy. A Japanese headline fits about half the characters of an English one in the same box. Cut words rather than inserting manual `\n`; hand-placed breaks land mid-word and strand punctuation.
 - **Speaker notes** (`page.notes`) are where the nuance goes; the slide keeps the claim.
 
 ## Layouts that work at 1280×720 (see references/layout.md for coordinates)
